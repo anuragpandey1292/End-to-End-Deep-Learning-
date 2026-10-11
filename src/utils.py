@@ -1,8 +1,10 @@
 import os
-import sys
 import pickle
+import sys
+
 from src.exception import CustomException
 from src.logger import logging
+
 
 def save_object(file_path: str, obj):
     """
@@ -14,11 +16,12 @@ def save_object(file_path: str, obj):
 
         with open(file_path, "wb") as file_obj:
             pickle.dump(obj, file_obj)
-            
+
         logging.info(f"Successfully saved object at: {file_path}")
-        
+
     except Exception as e:
         raise CustomException(e, sys)
+
 
 def load_object(file_path: str):
     """
@@ -27,6 +30,6 @@ def load_object(file_path: str):
     try:
         with open(file_path, "rb") as file_obj:
             return pickle.load(file_obj)
-            
+
     except Exception as e:
         raise CustomException(e, sys)

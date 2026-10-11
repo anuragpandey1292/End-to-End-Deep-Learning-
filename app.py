@@ -7,8 +7,9 @@ from src.pipeline.prediction_pipeline import CustomData, PredictPipeline
 
 app = FastAPI(title="Store Sales Deep Learning Predictor")
 
-# Optional: If you want to build a simple HTML frontend later, 
+# Optional: If you want to build a simple HTML frontend later,
 # templates = Jinja2Templates(directory="templates")
+
 
 @app.get("/", response_class=HTMLResponse)
 async def read_home():
@@ -48,25 +49,20 @@ async def read_home():
     </html>
     """
 
+
 @app.post("/predict", response_class=HTMLResponse)
 async def predict_datapoint(
-    store_nbr: int = Form(...),
-    family: str = Form(...),
-    onpromotion: int = Form(...)
+    store_nbr: int = Form(...), family: str = Form(...), onpromotion: int = Form(...)
 ):
     try:
         # 1. Collect form data into CustomData class
-        data = CustomData(
-            store_nbr=store_nbr,
-            family=family,
-            onpromotion=onpromotion
-        )
+        data = CustomData(store_nbr=store_nbr, family=family, onpromotion=onpromotion)
         final_new_data = data.get_data_as_data_frame()
-        
+
         # 2. Run prediction pipeline
         predict_pipeline = PredictPipeline()
         prediction = predict_pipeline.predict(final_new_data)
-        
+
         predicted_value = round(float(prediction[0]), 2)
 
         return f"""
@@ -93,6 +89,8 @@ async def predict_datapoint(
     except Exception as e:
         return f"<h3>Error occurred:</h3><p>{str(e)}</p><a href='/'>Back</a>"
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

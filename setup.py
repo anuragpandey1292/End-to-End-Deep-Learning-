@@ -1,7 +1,8 @@
 from setuptools import find_packages, setup
 from typing import List
 
-HYPEN_E_DOT = '-e .'
+HYPEN_E_DOT = "-e ."
+
 
 def get_requirements(file_path: str) -> List[str]:
     """
@@ -14,14 +15,15 @@ def get_requirements(file_path: str) -> List[str]:
 
         if HYPEN_E_DOT in requirements:
             requirements.remove(HYPEN_E_DOT)
-            
+
     return requirements
 
+
 setup(
-    name='end-to-end-deep-learning',
-    version='0.0.1',
-    author='Anuragh Pandey',
-    author_email='anurag.pandey1292@gmail.com',
+    name="end-to-end-deep-learning",
+    version="0.0.1",
+    author="Anuragh Pandey",
+    author_email="anurag.pandey1292@gmail.com",
     packages=find_packages(),
-    install_requires=get_requirements('requirements.txt')
+    install_requires=get_requirements("requirements.txt"),
 )
