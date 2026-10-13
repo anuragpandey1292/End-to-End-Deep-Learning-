@@ -12,7 +12,7 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 )
 
-from src.components.models import LSTMModel
+from src.components.models import GRUModel, LSTMModel
 from src.utils import load_object
 
 app = FastAPI(
@@ -98,7 +98,7 @@ def load_artifacts():
             transformed = preprocessor.transform(dummy_df)
             input_dim = transformed.shape[1]
 
-            model = LSTMModel(input_dim=input_dim, hidden_dim=64)
+            model = GRUModel(input_dim=input_dim, hidden_dim=64)
             model.load_state_dict(
                 torch.load(MODEL_PATH, map_location=torch.device("cpu"))
             )

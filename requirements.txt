@@ -5,4 +5,7 @@ torch
 torchvision
 tensorboard
 mlflow
--e .
+optuna
+fastapi
+uvicorn
+pydantic

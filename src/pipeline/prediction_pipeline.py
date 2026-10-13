@@ -5,26 +5,10 @@ import pandas as pd
 import torch
 import torch.nn as nn
 
+from src.components.models.gru import GRUModel
 from src.exception import CustomException
 from src.logger import logging
 from src.utils import load_object
-
-
-# Define the same neural network architecture used during training
-class LSTMModel(nn.Module):
-    def __init__(self, input_dim, hidden_dim=64, num_layers=2):
-        super().__init__()
-        self.lstm = nn.LSTM(
-            input_dim, hidden_dim, num_layers, batch_first=True, dropout=0.2
-        )
-        self.fc = nn.Linear(hidden_dim, 1)
-
-    def forward(self, x):
-        if len(x.shape) == 2:
-            x = x.unsqueeze(1)
-        out, _ = self.lstm(x)
-        out = self.fc(out[:, -1, :])
-        return out
 
 
 class PredictPipeline:
@@ -42,6 +26,8 @@ class PredictPipeline:
 
             # Transform incoming features using the saved preprocessor
             data_scaled = preprocessor.transform(features)
+            if hasattr(data_scaled, "toarray"):
+                data_scaled = data_scaled.toarray()
 
             # Convert to tensor
             X_tensor = torch.tensor(data_scaled, dtype=torch.float32)
@@ -49,8 +35,10 @@ class PredictPipeline:
             # Determine input dimension dynamically based on scaled features
             input_dim = X_tensor.shape[1]
 
-            model = LSTMModel(input_dim=input_dim)
-            model.load_state_dict(torch.load(model_path))
+            model = GRUModel(input_dim=input_dim, hidden_dim=64)
+            model.load_state_dict(
+                torch.load(model_path, map_location=torch.device("cpu"))
+            )
             model.eval()
 
             with torch.no_grad():
